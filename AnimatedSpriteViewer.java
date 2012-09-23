@@ -7,12 +7,17 @@ import java.awt.Image;
 import java.awt.Insets;
 import java.awt.MediaTracker;
 import java.awt.Toolkit;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.Border;
 import sprite_renderer.AnimationState;
+import sprite_renderer.PoseList;
 import sprite_renderer.SceneRenderer;
 import sprite_renderer.Sprite;
 import sprite_renderer.SpriteType;
@@ -57,7 +62,11 @@ public class AnimatedSpriteViewer extends JFrame
     // WE'LL LOAD ALL THE SPRITE TYPES INTO LIST
     // FROM AN XML FILE
     private ArrayList<String> spriteTypeNames;
-
+    
+    // We'll load all the spriteTypes into a list
+    // from each xml file
+    private ArrayList<SpriteType> spriteTypes;
+    
     // THIS WILL DO OUR XML FILE LOADING FOR US
     private AnimatedSpriteXMLLoader xmlLoader;
 
@@ -128,7 +137,9 @@ public class AnimatedSpriteViewer extends JFrame
             
             // FIRST UP IS THE SPRITE TYPES LIST
             xmlLoader.loadSpriteTypeNames(SPRITES_DATA_PATH,
-                             SPRITE_TYPE_LIST_FILE, spriteTypeNames);           
+                             SPRITE_TYPE_LIST_FILE, spriteTypeNames);
+            //load the sprite types into spriteTypes using spriteTypeNames
+            loadSpriteTypes(SPRITES_DATA_PATH, spriteTypeNames, spriteTypes);
         }
         catch(InvalidXMLFileFormatException ixffe)
         {
@@ -138,6 +149,87 @@ public class AnimatedSpriteViewer extends JFrame
             // WHAT HAPPENED
             JOptionPane.showMessageDialog(this, ixffe.toString());
             System.exit(0);
+        }
+        
+      
+    }
+    
+    /**
+     * loads the spriteTypes ArrayList parameter with the SpriteTypes
+     * in the XML files
+     * @param path
+     * @param spriteTypeNames
+     * @param spriteTypes
+     * @throws InvalidXMLFileFormatException 
+     */
+    private void loadSpriteTypes( String path, ArrayList<String> spriteTypeNames,
+                                ArrayList<SpriteType> spriteTypes) throws InvalidXMLFileFormatException
+    {
+        String xmlFile;
+        String xsdFile;
+        WhitespaceFreeXMLDoc cleanDoc;
+        WhitespaceFreeXMLNode width;
+        WhitespaceFreeXMLNode height;
+        ArrayList<WhitespaceFreeXMLNode> images;
+        ArrayList<WhitespaceFreeXMLNode> animationstates;
+        int id;
+        BufferedImage img = null;
+        
+        for (int i =0;i<spriteTypeNames.size();i++) {
+        // FIRST LET'S BUILD THE NAME OF THE XML FILE
+        xmlFile = ((path + spriteTypeNames.get(i)).trim()) + ".xml";
+        
+        // NOW LET'S BUILD THE NAME OF THE SCHEMA
+        xsdFile = (path + SPRITE_TYPE_SCHEMA_FILE);
+        
+        // IS THE XML VALID PER THE SCHEMA?
+        cleanDoc = xmlLoader.loadXMLDocument(xmlFile, xsdFile);
+        
+        // IF THERE'S A PROBLEM LOADING THE XML FILE THEN
+        // SKIP THIS SPRITE TYPE
+        if (cleanDoc == null)
+        {
+            throw new InvalidXMLFileFormatException(xmlFile, xsdFile);
+        }
+        
+        // IT'S A VALID XML FILE SO LET'S GET THE DATA
+        WhitespaceFreeXMLNode spriteTypeListNode = cleanDoc.getRoot();
+        width = spriteTypeListNode.getChildOfType("width");
+        height = spriteTypeListNode.getChildOfType("height");
+        images = (spriteTypeListNode.getChildOfType("images_list")).getChildrenOfType("image_file");
+        animationstates = (spriteTypeListNode.getChildOfType("animation_list")).getChildrenOfType("animation_state");
+        
+        SpriteType spriteTypeFromXML = new SpriteType(Integer.parseInt(width.getData()), Integer.parseInt(height.getData()));
+        
+        //Add all the images to the new spriteType.
+        for (WhitespaceFreeXMLNode imageNode : images) {
+            id = Integer.parseInt(imageNode.getAttributeValue("id"));
+            
+            try {
+                img = ImageIO.read(new File((path + spriteTypeNames.get(i)).trim() + imageNode.getAttributeValue("file_name") ) );
+            } catch (IOException e) {
+            }
+            //Add the image with corresponding id to the new spriteType
+            spriteTypeFromXML.addImage(id, img); 
+        } 
+        
+        //Add all the animation states
+        for (WhitespaceFreeXMLNode state : animationstates) {
+            //Get the pose list
+            PoseList thePoseList = spriteTypeFromXML.addPoseList(AnimationState.valueOf(state.getChildOfType("state").getData()));
+            Iterator<WhitespaceFreeXMLNode> animationIterator = (state.getChildOfType("animation_sequence")).getChildren();
+            //Add the images to the pose list
+            while(animationIterator.hasNext())
+            {
+                WhitespaceFreeXMLNode poseNode = animationIterator.next();
+                String poseID = poseNode.getAttributeValue("image_id");
+                String poseDuration = poseNode.getAttributeValue("duration");
+                thePoseList.addPose(Integer.parseInt(poseID), Integer.parseInt(poseDuration));
+            } 
+        }
+      
+        //Add the new SpriteType to the list
+        spriteTypes.add(spriteTypeFromXML);
         }
     }
     

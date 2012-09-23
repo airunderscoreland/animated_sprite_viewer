@@ -118,6 +118,7 @@ public class AnimatedSpriteXMLLoader
             spriteTypeNames.add(spriteTypeName);
         }            
     }
+           
     
     /**
      * This method reads in the xmlFile, validates it against the
