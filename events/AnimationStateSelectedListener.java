@@ -61,5 +61,4 @@ public class AnimationStateSelectedListener implements ItemListener {
         spriteList.add(selectedSprite);
         renderer.startScene();
     }
-    
 }

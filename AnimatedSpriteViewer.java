@@ -364,6 +364,10 @@ public class AnimatedSpriteViewer extends JFrame
         spriteTypesList.addListSelectionListener(stsl);
         AnimationStateSelectedListener assl = new AnimationStateSelectedListener(sceneRenderingPanel, spriteTypesList, spriteTypes, spriteList);
         spriteStateCombobox.addItemListener(assl);
+        SpeedUpAnimationHandler suah = new SpeedUpAnimationHandler(sceneRenderingPanel);
+        speedUpButton.addActionListener(suah);
+        SlowDownAnimationHandler sdah = new SlowDownAnimationHandler(sceneRenderingPanel);
+        slowDownButton.addActionListener(sdah);
     }
     
     /**

@@ -3,7 +3,6 @@
  */
 package animated_sprite_viewer.events;
 
-import animated_sprite_viewer.AnimatedSpriteViewer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
