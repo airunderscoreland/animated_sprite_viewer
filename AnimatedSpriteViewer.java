@@ -65,7 +65,7 @@ public class AnimatedSpriteViewer extends JFrame
     
     // We'll load all the spriteTypes into a list
     // from each xml file
-    private ArrayList<SpriteType> spriteTypes;
+    private HashMap<String, SpriteType> spriteTypes;
     
     // THIS WILL DO OUR XML FILE LOADING FOR US
     private AnimatedSpriteXMLLoader xmlLoader;
@@ -163,7 +163,7 @@ public class AnimatedSpriteViewer extends JFrame
      * @throws InvalidXMLFileFormatException 
      */
     private void loadSpriteTypes( String path, ArrayList<String> spriteTypeNames,
-                                ArrayList<SpriteType> spriteTypes) throws InvalidXMLFileFormatException
+                                HashMap<String, SpriteType> spriteTypes) throws InvalidXMLFileFormatException
     {
         String xmlFile;
         String xsdFile;
@@ -229,7 +229,7 @@ public class AnimatedSpriteViewer extends JFrame
         }
       
         //Add the new SpriteType to the list
-        spriteTypes.add(spriteTypeFromXML);
+        spriteTypes.put(spriteTypeNames.get(i), spriteTypeFromXML);
         }
     }
     
@@ -348,6 +348,9 @@ public class AnimatedSpriteViewer extends JFrame
         // CONSTRUCT AND REGISTER ALL THE HANDLERS
         StartAnimationHandler sah = new StartAnimationHandler(sceneRenderingPanel);
         startButton.addActionListener(sah);
+        SpriteTypeSelectionListener stsl = new SpriteTypeSelectionListener(spriteStateComboBoxModel, spriteTypes, spriteList);
+        spriteTypesList.addListSelectionListener(stsl);
+        
     }
     
     /**
