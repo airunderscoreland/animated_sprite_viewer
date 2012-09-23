@@ -81,7 +81,7 @@ public class AnimatedSpriteViewer extends JFrame
     // THIS WELL LET THE USER CHOOSE DIFFERENT ANIMATION STATES TO VIEW
     private JComboBox spriteStateCombobox;
     private DefaultComboBoxModel spriteStateComboBoxModel;
-
+    
     // THIS PANEL WILL ORGANIZE THE CENTER
     private JPanel southPanel;
     
@@ -91,6 +91,9 @@ public class AnimatedSpriteViewer extends JFrame
     // THIS TOOLBAR WILL ALLOW THE USER TO CONTROL ANIMATION
     private JPanel animationToolbar;
     private JButton startButton;
+    private JButton stopButton;
+    private JButton speedUpButton;
+    private JButton slowDownButton;
     
     /**
      * The entire application will be initialized from here, including
@@ -127,6 +130,8 @@ public class AnimatedSpriteViewer extends JFrame
         
         // WE'LL PUT ALL THE SPRITE TYPES HERE
         spriteTypeNames = new ArrayList<String>();
+        
+        spriteTypes = new HashMap<String, SpriteType>();
         
         // LOAD THE SPRITE TYPES FROM THE XML FILE
         try
@@ -177,7 +182,7 @@ public class AnimatedSpriteViewer extends JFrame
         
         for (int i =0;i<spriteTypeNames.size();i++) {
         // FIRST LET'S BUILD THE NAME OF THE XML FILE
-        xmlFile = ((path + spriteTypeNames.get(i)).trim()) + ".xml";
+        xmlFile = ((path + spriteTypeNames.get(i)+'/'+ spriteTypeNames.get(i)).trim()) + ".xml";
         
         // NOW LET'S BUILD THE NAME OF THE SCHEMA
         xsdFile = (path + SPRITE_TYPE_SCHEMA_FILE);
@@ -197,7 +202,7 @@ public class AnimatedSpriteViewer extends JFrame
         width = spriteTypeListNode.getChildOfType("width");
         height = spriteTypeListNode.getChildOfType("height");
         images = (spriteTypeListNode.getChildOfType("images_list")).getChildrenOfType("image_file");
-        animationstates = (spriteTypeListNode.getChildOfType("animation_list")).getChildrenOfType("animation_state");
+        animationstates = (spriteTypeListNode.getChildOfType("animations_list")).getChildrenOfType("animation_state");
         
         SpriteType spriteTypeFromXML = new SpriteType(Integer.parseInt(width.getData()), Integer.parseInt(height.getData()));
         
@@ -206,7 +211,8 @@ public class AnimatedSpriteViewer extends JFrame
             id = Integer.parseInt(imageNode.getAttributeValue("id"));
             
             try {
-                img = ImageIO.read(new File((path + spriteTypeNames.get(i)).trim() + imageNode.getAttributeValue("file_name") ) );
+                String filename = (path + spriteTypeNames.get(i)).trim() +'/'+ imageNode.getAttributeValue("file_name");
+                img = ImageIO.read(new File(filename) );
             } catch (IOException e) {
             }
             //Add the image with corresponding id to the new spriteType
@@ -227,7 +233,7 @@ public class AnimatedSpriteViewer extends JFrame
                 thePoseList.addPose(Integer.parseInt(poseID), Integer.parseInt(poseDuration));
             } 
         }
-      
+
         //Add the new SpriteType to the list
         spriteTypes.put(spriteTypeNames.get(i), spriteTypeFromXML);
         }
@@ -274,6 +280,10 @@ public class AnimatedSpriteViewer extends JFrame
         animationToolbar = new JPanel();         
         MediaTracker mt = new MediaTracker(this);
         startButton = initButton(   "StartAnimationButton.png",     "Start Animation",      mt, 0, animationToolbar);
+        stopButton = initButton("StopAnimationButton.png", "Stop Animation", mt, 1, animationToolbar);
+        speedUpButton = initButton("SpeedUpAnimationButton.png", "Speed Up", mt, 2, animationToolbar);
+        slowDownButton = initButton("SlowDownAnimationButton.png", "Slow Down", mt, 3, animationToolbar);
+        
         try { mt.waitForAll(); }
         catch(InterruptedException ie)
         { ie.printStackTrace(); }
@@ -348,9 +358,12 @@ public class AnimatedSpriteViewer extends JFrame
         // CONSTRUCT AND REGISTER ALL THE HANDLERS
         StartAnimationHandler sah = new StartAnimationHandler(sceneRenderingPanel);
         startButton.addActionListener(sah);
-        SpriteTypeSelectionListener stsl = new SpriteTypeSelectionListener(spriteStateComboBoxModel, spriteTypes, spriteList);
+        StopAnimationHandler stopah = new StopAnimationHandler(sceneRenderingPanel);
+        stopButton.addActionListener(stopah);
+        SpriteTypeSelectionListener stsl = new SpriteTypeSelectionListener(spriteStateCombobox, spriteStateComboBoxModel, spriteTypes, spriteList);
         spriteTypesList.addListSelectionListener(stsl);
-        
+        AnimationStateSelectedListener assl = new AnimationStateSelectedListener(sceneRenderingPanel, spriteTypesList, spriteTypes, spriteList);
+        spriteStateCombobox.addItemListener(assl);
     }
     
     /**
