@@ -1,6 +1,3 @@
-/*
- * 
- */
 package animated_sprite_viewer.events;
 
 import java.awt.event.ActionEvent;
@@ -13,6 +10,8 @@ import sprite_renderer.SceneRenderer;
  * the timer scaler by 10%
  * 
  * @author Andrew Ireland
+ * 
+ * @version 1.0
  */
 public class SlowDownAnimationHandler implements ActionListener 
 {
@@ -25,6 +24,7 @@ public class SlowDownAnimationHandler implements ActionListener
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        //Get the animation time scaler and multiply it by 1.1 and save that
         float scaler = renderer.getTimeScaler();
         renderer.setTimeScaler((float)(scaler*1.10));
     }

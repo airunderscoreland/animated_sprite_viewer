@@ -1,6 +1,3 @@
-/*
- * 
- */
 package animated_sprite_viewer.events;
 
 import java.awt.event.ActionEvent;
@@ -25,6 +22,7 @@ public class SpeedUpAnimationHandler implements ActionListener
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        //Get the animation time scaler and multiply it by 0.9 and save that
         float scaler = renderer.getTimeScaler();
         renderer.setTimeScaler((float)(scaler*0.90));
     }
