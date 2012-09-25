@@ -7,7 +7,7 @@ import sprite_renderer.SceneRenderer;
 /**
  * When the speed up button is pressed, this handler
  * will call the actionPerformed method and increase
- * the timer scaler by 10%
+ * the timer scaler by 15%
  * 
  * @author Andrew Ireland
  */
@@ -22,9 +22,9 @@ public class SpeedUpAnimationHandler implements ActionListener
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        //Get the animation time scaler and multiply it by 0.9 and save that
+        //Get the animation time scaler and multiply it by 0.85 and save that
         float scaler = renderer.getTimeScaler();
-        renderer.setTimeScaler((float)(scaler*0.90));
+        renderer.setTimeScaler((float)(scaler*0.85));
     }
     
     

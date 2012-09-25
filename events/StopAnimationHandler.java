@@ -8,8 +8,8 @@ import sprite_renderer.SceneRenderer;
  * The StopAnimationHandler class responds to when the user
  * requests to start animation.
  * 
- * @author  Richard McKenna
- *          Andrew Ireland
+ * @author  Andrew Ireland
+ *          Richard McKenna
  * @version 1.0
  */
 public class StopAnimationHandler implements ActionListener
@@ -29,10 +29,8 @@ public class StopAnimationHandler implements ActionListener
     }    
 
     /**
-     * Here's the actual method called when the user clicks the 
-     * start animation method, which results in pausing of the
-     * renderer, and thus the animator as well.
-     * 
+     * This method is called when the user clicks the stop button. It pauses 
+     * the scene.
      * @param ae Contains information about the event.
      */
     @Override

@@ -17,6 +17,7 @@ import sprite_renderer.SpriteType;
  * occurs when a change of selection is made to the JList (list of SpriteTypes).
  * 
  * @author Andrew Ireland
+ * @version 1.0
  */
 public class SpriteTypeSelectionListener implements ListSelectionListener {
 
@@ -28,12 +29,19 @@ public class SpriteTypeSelectionListener implements ListSelectionListener {
     //DEBUG
     private int count;
     
-    public SpriteTypeSelectionListener(JComboBox cb, DefaultComboBoxModel cbmodel, HashMap<String,SpriteType> st, ArrayList<Sprite> sl) 
+    /**
+     * Default constructor
+     * 
+     * @param cb The combobox in which to add the animation states
+     * @param st The hash map of sprite types
+     * @param sl The sprite list of rendered sprites
+     */
+    public SpriteTypeSelectionListener(JComboBox cb, HashMap<String,SpriteType> st, ArrayList<Sprite> sl) 
     {
-        model = cbmodel;
+        combobox = cb;
+        model = (DefaultComboBoxModel) cb.getModel();
         spriteTypes = st;
         sprites = sl;
-        combobox = cb;
         count=0;
     }
     

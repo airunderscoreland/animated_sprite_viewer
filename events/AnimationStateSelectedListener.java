@@ -33,11 +33,12 @@ public class AnimationStateSelectedListener implements ItemListener {
     private static final String SELECTION_DEFAULT = "Select Animation State";
     private boolean lamefix;
     /**
+     * Default Constructor
      * 
-     * @param sr
-     * @param jl
-     * @param hmap
-     * @param sl 
+     * @param sr The SceneRenderer panel that renders the sprites
+     * @param jl The JList of SpriteTypes
+     * @param hmap The HashMap that stores the SpriteTypes
+     * @param sl The ArrayList that stores the sprite list to be rendered
      */
     public AnimationStateSelectedListener(SceneRenderer sr, JList jl, HashMap<String, SpriteType> hmap, ArrayList<Sprite> sl)
     {
@@ -51,7 +52,7 @@ public class AnimationStateSelectedListener implements ItemListener {
     
     @Override
     /**
-     * start rendering the selected sprite type's animation state
+     * start rendering the selected sprite type's selected animation state
      */
     public void itemStateChanged(ItemEvent e) 
     {
@@ -67,8 +68,8 @@ public class AnimationStateSelectedListener implements ItemListener {
             spriteList.add(selectedSprite);
             if (lamefix) {
                 renderer.startScene();
-                renderer.unpauseScene();
             }
+            renderer.unpauseScene();
             lamefix = false;
             }
         }

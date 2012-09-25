@@ -162,9 +162,9 @@ public class AnimatedSpriteViewer extends JFrame
     /**
      * loads the spriteTypes ArrayList parameter with the SpriteTypes
      * in the XML files
-     * @param path
-     * @param spriteTypeNames
-     * @param spriteTypes
+     * @param path 
+     * @param spriteTypeNames 
+     * @param spriteTypes 
      * @throws InvalidXMLFileFormatException 
      */
     private void loadSpriteTypes( String path, ArrayList<String> spriteTypeNames,
@@ -360,7 +360,7 @@ public class AnimatedSpriteViewer extends JFrame
         startButton.addActionListener(sah);
         StopAnimationHandler stopah = new StopAnimationHandler(sceneRenderingPanel);
         stopButton.addActionListener(stopah);
-        SpriteTypeSelectionListener stsl = new SpriteTypeSelectionListener(spriteStateCombobox, spriteStateComboBoxModel, spriteTypes, spriteList);
+        SpriteTypeSelectionListener stsl = new SpriteTypeSelectionListener(spriteStateCombobox, spriteTypes, spriteList);
         spriteTypesList.addListSelectionListener(stsl);
         AnimationStateSelectedListener assl = new AnimationStateSelectedListener(sceneRenderingPanel, spriteTypesList, spriteTypes, spriteList);
         spriteStateCombobox.addItemListener(assl);
